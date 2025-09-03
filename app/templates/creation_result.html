@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survey Created!</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 250px;
+            margin: 20px 0;
+        }
+
+        a {
+            color: #007bff;
+        }
+
+        /* Adicione estas novas regras de estilo */
+        nav {
+            background-color: #e7f3fe;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        nav a {
+            font-weight: bold;
+            color: #0056b3;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav>
+            <a href="/">🏠 Home / Create New Survey</a>
+        </nav>
+        <h1>Survey Created Successfully!</h1>
+        <p><strong>Question:</strong> {{ question }}</p>
+
+        <h3>Scan the QR Code to Vote:</h3>
+        <img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Code for voting">
+        <h3>Or share this link to vote:</h3>
+        <p><a href="{{ vote_url }}" target="_blank">{{ vote_url }}</a></p>
+
+        <h3>Or share the results link:</h3>
+        <p><a href="{{ results_url }}" target="_blank">{{ results_url }}</a></p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+#  k8s/01-redis.yaml
+
+# --- Redis Service ---
+# A Service provides a stable DNS name and IP address for the Redis Pod(s).
+# The type 'ClusterIP' makes it only reachable from within the Kubernetes cluster.
+# Our application will connect to Redis using this Service's name: 'qr-survey-redis-svc'.
+apiVersion: v1
+kind: Service
+metadata:
+  name: qr-survey-redis-svc
+spec:
+  selector:
+    app: redis # Selects Pods with the label 'app: redis'
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+---
+# --- Redis StatefulSet ---
+# A StatefulSet is used for stateful applications like databases.
+# It provides stable network identifiers and persistent storage that survives Pod restarts.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qr-survey-redis-sts
+spec:
+  serviceName: "qr-survey-redis-svc" # Associates this StatefulSet with the Service above
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis # Must match the labels in the Pod template
+  template:
+    metadata:
+      labels:
+        app: redis # The label for the Pods created by this StatefulSet
+    spec:
+      containers:
+        - name: redis
+          image: qr-survey-redis # The custom image we built
+          imagePullPolicy: IfNotPresent # Tells K8s to use the local image if it exists
+          ports:
+            - containerPort: 6379
+          volumeMounts: # Mounts the persistent volume into the container
+            - name: redis-data
+              mountPath: /data # The directory inside the container where data will be stored
+  # --- Persistent Volume Claim Template ---
+  # This template automatically creates a PersistentVolumeClaim (PVC) for each Pod.
+  # The PVC requests storage from the cluster to make our data persistent.
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"] # The volume can be mounted by a single node
+        resources:
+          requests:
+            storage: 1Gi # Request 1 Gigabyte of storage

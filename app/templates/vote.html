@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; text-align: center; }
+        .question { font-size: 1.5em; margin-bottom: 20px; }
+        .vote-btn { font-size: 1.2em; padding: 15px 30px; margin: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="question">{{ question }}</div>
+    <form action="/vote/{{ survey_id }}" method="post">
+        <input type="submit" name="vote" value="Yes" class="vote-btn">
+        <input type="submit" name="vote" value="No" class="vote-btn">
+    </form>
+</body>
+</html>

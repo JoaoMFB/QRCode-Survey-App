@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QR Survey App</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        hr {
+            margin: 30px 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin-bottom: 8px;
+            padding: 12px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0056b3;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* Adicione estas novas regras de estilo */
+        nav {
+            background-color: #e7f3fe;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        nav a {
+            font-weight: bold;
+            color: #0056b3;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="/">🏠 Home / Create New Survey</a>
+    </nav>
+    <h1>Create a New Yes/No Survey</h1>
+    <form action="/create" method="post">
+        <label for="question">Enter your question:</label><br>
+        <input type="text" id="question" name="question" required>
+        <br>
+        <input type="submit" value="Create Survey">
+    </form>
+
+    <hr>
+
+    <div class="history-header">
+        <h2>Survey History</h2>
+        <!-- NOVO FORMULÁRIO PARA LIMPAR O HISTÓRICO -->
+        <form action="/clear-history" method="post"
+            onsubmit="return confirm('Are you sure you want to delete all surveys? This cannot be undone.');">
+            <button type="submit" class="clear-btn">Clear History</button>
+        </form>
+    </div>
+
+    {% if surveys %}
+    <ul>
+        {% for survey in surveys %}
+        <li>
+            <a href="/results/{{ survey.id }}">{{ survey.question }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No surveys have been created yet.</p>
+    {% endif %}
+
+</body>
+
+</html>

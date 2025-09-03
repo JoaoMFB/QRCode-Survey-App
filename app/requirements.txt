@@ -1,0 +1,17 @@
+# For the FastAPI framework
+fastapi
+
+# For the ASGI server to run FastAPI (standard includes performance extras)
+uvicorn[standard]
+
+# For interacting with the Redis database
+redis
+
+# For generating QR codes (pil extra for image manipulation)
+qrcode[pil]
+
+jinja2
+
+python-multipart
+
+qrcode[pil]

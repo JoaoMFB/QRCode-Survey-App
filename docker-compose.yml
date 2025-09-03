@@ -1,0 +1,72 @@
+services:
+  # HAProxy load balancer
+  haproxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.haproxy
+    container_name: qr_survey_haproxy
+    restart: unless-stopped
+    ports:
+      - "80:80" # expose HAProxy on host port 80
+    depends_on:
+      - web1 # start after web1
+      - web2 # start after web2
+    networks:
+      - frontend-network # talks to web1 and web2
+
+  # First web app instance
+  web1:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: qr_survey_web_1
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: db # connect to Redis by service name
+      REDIS_PORT: 6379
+    depends_on:
+      - db # wait for Redis to start
+    networks:
+      - frontend-network # receives traffic from HAProxy
+      - backend-network # connects to Redis
+
+  # Second web app instance (same as web1)
+  web2:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: qr_survey_web_2
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: db
+      REDIS_PORT: 6379
+    depends_on:
+      - db
+    networks:
+      - frontend-network
+      - backend-network
+
+  # Redis database
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.redis
+    container_name: qr_survey_redis
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379" # only accessible from host
+    volumes:
+      - redis_data:/data # persist Redis data
+    networks:
+      - backend-network # only web servers can reach it
+
+# Custom Docker networks
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+
+# Persistent volume for Redis
+volumes:
+  redis_data:

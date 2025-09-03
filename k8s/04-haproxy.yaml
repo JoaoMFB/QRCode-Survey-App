@@ -1,0 +1,52 @@
+
+# -----------------------------------------------------------------------------
+# FILE: k8s/04-haproxy.yaml
+# -----------------------------------------------------------------------------
+
+# --- HAProxy Service ---
+# This Service exposes the HAProxy Deployment to the outside world.
+# 'type: LoadBalancer' tells the cloud provider (or Minikube) to provision an
+# external IP address and forward traffic from it to our HAProxy Pod.
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy-service
+spec:
+  type: LoadBalancer # Exposes the service externally
+  selector:
+    app: haproxy
+  ports:
+    - protocol: TCP
+      port: 80 # External port
+      targetPort: 80 # Port on the container
+---
+# --- HAProxy Deployment ---
+# This Deployment manages the HAProxy Pod, ensuring it is always running.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      containers:
+        - name: haproxy
+          image: qr-survey-haproxy # The custom image we built
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts: # Mounts the configuration file into the container
+            - name: haproxy-config-volume
+              mountPath: /etc/haproxy/haproxy.cfg # The destination path inside the container
+              subPath: haproxy.cfg # Specifies which key from the ConfigMap to use
+      volumes: # Defines the volume to be mounted
+        - name: haproxy-config-volume
+          configMap:
+            name: haproxy-configmap # The source of the volume is our ConfigMap

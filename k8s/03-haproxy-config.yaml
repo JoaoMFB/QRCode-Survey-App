@@ -1,0 +1,43 @@
+
+# k8s/03-haproxy-config.yaml
+
+# --- HAProxy ConfigMap ---
+# A ConfigMap is used to store configuration data as key-value pairs.
+# Here, we are storing the entire content of 'haproxy.cfg' to be used by the HAProxy Pod.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-configmap
+data:
+  haproxy.cfg: |
+    global
+        log         127.0.0.1 local2
+        pidfile     /var/run/haproxy.pid
+        maxconn     4000
+
+    defaults
+        mode                    http
+        log                     global
+        option                  httplog
+        option                  dontlognull
+        option http-server-close
+        option forwardfor       except 127.0.0.0/8
+        option                  redispatch
+        retries                 3
+        timeout http-request    10s
+        timeout queue           1m
+        timeout connect         10s
+        timeout client          1m
+        timeout server          1m
+        timeout http-keep-alive 10s
+        timeout check           10s
+        maxconn                 3000
+
+    frontend http_front
+        bind *:80
+        default_backend http_back
+
+    backend http_back
+        balance roundrobin
+        # The backend now points to our application's Service on port 8000
+        server web_app qr-survey-app-svc:8000 check

@@ -1,0 +1,19 @@
+# Use the Amazon Linux 2 base image
+FROM amazonlinux:2
+
+# Update packages and install Redis
+RUN yum update -y && \
+    amazon-linux-extras install redis6 -y && \
+    yum clean all
+
+# Define Redis data directory as a volume
+VOLUME /data
+
+# Set working directory to /data
+WORKDIR /data   
+
+# Expose Redis port
+EXPOSE 6379
+
+# Start Redis server with append-only file persistence
+CMD ["redis-server", "--protected-mode", "no", "--bind", "0.0.0.0", "--appendonly", "yes"]

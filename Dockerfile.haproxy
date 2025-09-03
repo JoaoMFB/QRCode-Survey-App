@@ -1,0 +1,16 @@
+# Use the Amazon Linux 2 base image
+FROM amazonlinux:2
+
+# Update and install HAProxy
+RUN yum update -y && \
+    yum install -y haproxy && \
+    yum clean all
+
+# Copy the custom HAProxy config to the default location
+COPY haproxy.cfg /etc/haproxy/haproxy.cfg
+
+# Expose port 80 for HTTP traffic
+EXPOSE 80
+
+# Start HAProxy with our config file
+CMD ["haproxy", "-f", "/etc/haproxy/haproxy.cfg"]

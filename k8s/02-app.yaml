@@ -1,0 +1,47 @@
+
+#  k8s/02-app.yaml
+
+# --- Application Service ---
+# This Service acts as an internal load balancer for our application Pods.
+# It groups the Pods with the label 'app: qr-survey-app' and gives them a single DNS name.
+# The HAProxy load balancer will send traffic to this Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: qr-survey-app-svc
+spec:
+  selector:
+    app: qr-survey-app
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+# --- Application Deployment ---
+# A Deployment manages stateless applications. It ensures that a specified
+# number of replicas (Pods) are running and handles updates gracefully.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qr-survey-app-deployment
+spec:
+  replicas: 2 # Run 2 identical instances of our application, like web1 and web2
+  selector:
+    matchLabels:
+      app: qr-survey-app
+  template:
+    metadata:
+      labels:
+        app: qr-survey-app
+    spec:
+      containers:
+        - name: app
+          image: qr-survey-app # The custom image we built
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env: # Environment variables passed to the application
+            - name: REDIS_HOST
+              value: "qr-survey-redis-svc" # The DNS name of the Redis Service
+            - name: REDIS_PORT
+              value: "6379"

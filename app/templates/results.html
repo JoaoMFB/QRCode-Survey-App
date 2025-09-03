@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survey Results</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .chart-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+
+        .bar-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            width: 50px;
+            font-weight: bold;
+        }
+
+        .bar {
+            height: 30px;
+            color: white;
+            text-align: right;
+            padding-right: 5px;
+            line-height: 30px;
+            box-sizing: border-box;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .yes-bar {
+            background-color: #4CAF50;
+        }
+
+        .no-bar {
+            background-color: #f44336;
+        }
+
+        /* Adicione estas novas regras de estilo */
+        nav {
+            background-color: #e7f3fe;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        nav a {
+            font-weight: bold;
+            color: #0056b3;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="/">🏠 Home / Create New Survey</a>
+    </nav>
+    <h1 class="question">{{ question }}</h1>
+
+    <div class="chart-container">
+        <h2>Results (Total Votes: {{ total_votes }})</h2>
+        <div class="bar-wrapper">
+            <div class="label">Yes</div>
+            <div class="bar yes-bar" style="width: {{ yes_percent }}%;">{{ yes_votes }}</div>
+        </div>
+        <div class="bar-wrapper">
+            <div class="label">No</div>
+            <div class="bar no-bar" style="width: {{ no_percent }}%;">{{ no_votes }}</div>
+        </div>
+    </div>
+</body>
+
+</html>
