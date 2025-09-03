@@ -53,8 +53,8 @@ The application follows a 3-tier architecture, fully containerized with Docker a
 #### 1. Clone the repository
 
 ```bash
-git clone <cloud_computing_2025>
-cd <cloud_computing_2025>
+git clone https://github.com/JoaoMFB/QRCode-Survey-App.git
+cd <QRCode-Survey-App>
 ```
 
 #### 2. Build and start the containers
